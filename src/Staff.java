@@ -126,12 +126,6 @@ class Staff implements ProjectMessage{
            message.put(item);
            scheduler.sendMessage(message);
       }
-      private void AddOneItem(Item item,String name){
-            Message message = new Message("addOneItem");
-            message.put(item);
-            message.setExtrainfo(name);
-            scheduler.sendMessage(message);
-      }
 
       void OpenTheStore(){
             // TODO: Every time a deal is made, we need to check the inventory and place an order if something runs out of storage.
