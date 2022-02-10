@@ -25,17 +25,27 @@ class scheduler{
 
              do{
                  // TODO: 2/7/2022 Main loop
+                 System.out.print("\n\n\n");
+                 System.out.println("=========================================================================================");
                  System.out.println("DAY: "+(day+1));
-                 System.out.println("--------------------------------------------");
                  shipToStore();
                  System.out.println("Hello!");
                  workAssignment();
                  sendMessage(new Message("work"));
                  oneDayPassed();
-                 System.out.println("--------------------------------------------");
+                 System.out.println("=========================================================================================");
              }while (day != 30);
+
+            summary();
       }
 
+      private static void summary(){
+             System.out.println("Summary");
+             sendMessage(new Message("printInventory"));
+             sendMessage(new Message("printSoldItem"));
+             sendMessage(new Message("printCash"));
+             System.out.println(bankMoney);
+      }
       static void shipToStore(){
             for(ArrayList<Integer> x:waitingQue){
                 if(x.get(1) == day){

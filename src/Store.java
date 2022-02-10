@@ -5,11 +5,12 @@ import java.util.Random;
 
 
 class Store implements ProjectMessage{
-     private double register = 0;
+     private double register = 75;
      private final ArrayList<Item> goods;
      final ArrayList<ArrayList<Integer>> mailBox;
-     private final int[] inventorylist;
+     private int[] inventorylist;
      private final Random random = new Random(System.currentTimeMillis());
+     private final ArrayList<Item> soldList;
      Store(){
           // TODO: 2/7/2022 Please implement the initialization part
           //For the use of SKU attribute, please check how I coded the
@@ -20,6 +21,7 @@ class Store implements ProjectMessage{
          goods = new ArrayList<>();
          mailBox = new ArrayList<>();
          inventorylist = new int[17];
+         soldList = new ArrayList<>();
          for(int i=0; i<17; i++){
              inventorylist[i]=0;
          }
@@ -101,25 +103,31 @@ class Store implements ProjectMessage{
 
      //Add all shipped things to the goods list.
      private void cleanMailBox(){
+         if(mailBox.size() == 0)System.out.println("Nothing has arrived yet");
           mailBox.forEach(entry->{
                         addItem(false,entry.get(0),entry.get(1),entry.get(2),entry.get(3),3);
                     }
                );
           mailBox.clear();
-          System.out.println("Current stock:");
-          int newLine = 0;
-          for(Item item:goods){
-              if(newLine ==2){
-                  newLine = 0;
-                  System.out.print("\n");
-              }
-              System.out.print(" "+item.name + " "+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")     ");
-              newLine ++;
-          }
+     }
 
-          System.out.println();
-          System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
-          System.out.println("End");
+     private void printInventory(){
+         System.out.println("*****************************************************");
+         System.out.println("Current stock:");
+         int newLine = 0;
+         for(Item item:goods){
+             if(newLine ==2){
+                 newLine = 0;
+                 System.out.print("\n");
+             }
+             System.out.print(" "+item.name + " "+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")     ");
+             newLine ++;
+         }
+
+         System.out.println();
+         System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
+         System.out.println("End");
+         System.out.println("*****************************************************");
      }
 
      private void checkMoney(){
@@ -134,13 +142,13 @@ class Store implements ProjectMessage{
           }
      }
 
-     void add_1000(){
+     private void add_1000(){
           register += 1000;
           System.out.println("Cash register now has: "+register);
      }
 
     //return the user the goods list.
-     void sumInventory(Message message){
+     private void sumInventory(Message message){
           ArrayList<Item> ItemCopy = new ArrayList<>(goods);
           int[] InventoryCopy = new int[17];
           System.arraycopy(inventorylist,0,InventoryCopy,0,inventorylist.length);
@@ -148,7 +156,7 @@ class Store implements ProjectMessage{
           message.put(InventoryCopy);
      }
 
-    void payment(Message message){
+    private void payment(Message message){
          int paidAmount = Integer.parseInt(message.getExtraInfo());
          register -= paidAmount;
          if(register <= 0)System.out.println("Negative money. The staff went ahead to take some money from the bank");
@@ -156,27 +164,41 @@ class Store implements ProjectMessage{
          register += 1000;
     }
 
-    void removeItem(Message message){
+    private void removeItem(Message message){
          goods.removeIf(item->item.name.equals(message.getExtraInfo()));
-         inventorylist[message.getSKU()] --;
+         inventorylist[message.getSKU()] -= 1;
+         System.out.println(message.getExtraInfo()+" has been removed from the inventory");
     }
-    void changeListPrice(Message message){
+    private void changeListPrice(Message message){
          goods.forEach(item -> {
              if (item.name.equals(message.getExtraInfo())){
                  item.listPrice = Integer.parseInt(message.getExtraInfo());
              }
          });
     }
-    void grapOneItem(Message message){
+    private void grapOneItem(Message message){
          for(Item item : goods){
              if(item.name.equals(message.getExtraInfo()))message.put(item);
          }
     }
-    void addOneItem(Message message){
+    private void addOneItem(Message message){
          Item item = message.getItem(0);
          if(item.listPrice != item.purchasePrice*2)item.listPrice = item.purchasePrice * 2;
     }
 
+    private void grabAllGodds(Message message){
+         message.put(goods);
+    }
+    private void removeALLBrokentItem(){
+         goods.removeIf(item -> item.condition <=0);
+         recountInventory();
+    }
+     private void recountInventory(){
+         inventorylist = new int[17];
+         for(Item item: goods){
+             inventorylist[getSKU(item)] ++;
+         }
+     }
      @Override
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
@@ -190,6 +212,10 @@ class Store implements ProjectMessage{
                case "changeListPrice"->changeListPrice(message);
                case  "grapAnItem"->grapOneItem(message);
                case  "AddOneItem"->addOneItem(message);
+               case  "grabAllGoods"->grabAllGodds(message);
+               case  "printInventory"->printInventory();
+               case  "removeBrokenItem"->removeALLBrokentItem();
+               case  "printCash"->System.out.println("Cash Register has: "+ register);
           }
      }
 
