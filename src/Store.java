@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
 
@@ -186,7 +185,7 @@ class Store implements ProjectMessage{
          if(item.listPrice != item.purchasePrice*2)item.listPrice = item.purchasePrice * 2;
     }
 
-    private void grabAllGodds(Message message){
+    private void grabAllGoods(Message message){
          message.put(goods);
     }
     private void removeALLBrokentItem(){
@@ -212,7 +211,7 @@ class Store implements ProjectMessage{
                case "changeListPrice"->changeListPrice(message);
                case  "grapAnItem"->grapOneItem(message);
                case  "AddOneItem"->addOneItem(message);
-               case  "grabAllGoods"->grabAllGodds(message);
+               case  "grabAllGoods"-> grabAllGoods(message);
                case  "printInventory"->printInventory();
                case  "removeBrokenItem"->removeALLBrokentItem();
                case  "printCash"->System.out.println("Cash Register has: "+ register);
