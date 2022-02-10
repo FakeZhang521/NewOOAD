@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
->>>>>>> 358aede315c514873e12ac418af7356850d43700
 import java.util.Random;
 
 public class Customer{
@@ -10,10 +7,14 @@ public class Customer{
     private static final Random random = new Random(System.currentTimeMillis());
 
     Customer(){
-        int SKU = random.nextInt(0,16);
-<<<<<<< HEAD
-=======
-        String SKUtype = Store.SKUitemclass(SKU);
->>>>>>> 358aede315c514873e12ac418af7356850d43700
+        int SKU = 14;
+        Message grapItemName = new Message("getItemName");
+        grapItemName.setSKU(SKU);
+        scheduler.sendMessage(grapItemName);
+        String SKUtype = grapItemName.getExtraInfo();
+
+        System.out.println("The SKU is: "+SKU);
+        System.out.println("What I got back from the message: "+SKUtype);
+        System.out.println("Correct answer: PracticeAmp");
     }
 }

@@ -9,6 +9,19 @@ abstract class Item {
         int condition;
         double salesPrice;
         int daySold;
+
+        String getCondition(){
+                String result;
+                switch (condition){
+                        case 1->result ="poor";
+                        case 2->result ="fair";
+                        case 3->result ="good";
+                        case 4->result ="very good";
+                        case 5->result ="excellent";
+                        default -> throw new IllegalStateException("Unreachable code");
+                }
+                return result;
+        }
 }
 
 class Music extends Item{
@@ -55,3 +68,4 @@ class Accessory extends Item{
         }
 }
 
+class Error extends Item{};

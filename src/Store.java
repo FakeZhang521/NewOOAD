@@ -1,20 +1,15 @@
 import java.util.ArrayList;
-
-<<<<<<< HEAD
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Random;
 
 
 class Store implements ProjectMessage{
-=======
-interface ItemAccess{
-    static String SKUitemclass(int SKU);
-}
-
-class Store implements ProjectMessage, ItemAccess{
->>>>>>> 358aede315c514873e12ac418af7356850d43700
      private double register = 0;
      private final ArrayList<Item> goods;
      final ArrayList<ArrayList<Integer>> mailBox;
-     private int[] inventorylist;
+     private final int[] inventorylist;
+     private final Random random = new Random(System.currentTimeMillis());
      Store(){
           // TODO: 2/7/2022 Please implement the initialization part
           //For the use of SKU attribute, please check how I coded the
@@ -28,58 +23,57 @@ class Store implements ProjectMessage, ItemAccess{
          for(int i=0; i<17; i++){
              inventorylist[i]=0;
          }
+           for(int x = 0; x<inventorylist.length;x++){
+               addItem(true,x,0,random.nextInt(1,51), random.nextInt(1,6),3);
+           }
 
-<<<<<<< HEAD
      }
+
+     private void addItem(boolean isForInitial,int ... input){
+         for(int x =0;x<input[4];x++){
+             Item newItem = ItemFactory.createItem(SKUitemclass(input[0]));
+             newItem.SKU = input[0];
+             newItem.dayArrived = input[1];
+             newItem.purchasePrice = input[2];
+             newItem.condition = input[3];
+             newItem.type = SKUitemclass(newItem.SKU);
+             newItem.name = newItem.type + random.nextInt()%100;
+             goods.add(newItem);
+             if(!isForInitial)System.out.println(newItem.name+ " has been added to the inventory");
+             inventorylist[newItem.SKU] ++;
+             if(!isForInitial)System.out.println("Current stock size: "+ goods.size());
+         }
+     }
+
 
      private int getSKU(Item item){
-=======
-         Customer test = new Customer();
-
-         Item newItem = new Hat();
-         newItem.SKU = goods.size();
-         newItem.amount = 3;
-         goods.add(newItem);
-
-         Item newItem2 = new Shirt();
-         newItem2.SKU = goods.size();
-         newItem2.amount = 3;
-         goods.add(newItem2);
-
-         Item newItem3 = new CDPlayer();
-         newItem.SKU = goods.size();
-         newItem3.amount = 3;
-         goods.add(newItem3);
-
-     }
-
-     public int getSKU(Item item){
->>>>>>> 358aede315c514873e12ac418af7356850d43700
-         int SKU = -1;
-         switch (item.type){
-             case "PaperScore": SKU = 0; break;
-             case "CD": SKU = 1; break;
-             case "Vinyl": SKU = 2; break;
-             case "CDPlayer": SKU = 3; break;
-             case "RecordPlayer": SKU = 4; break;
-             case "MP3": SKU = 5; break;
-             case "Guitar": SKU = 6; break;
-             case "Bass": SKU = 7; break;
-             case "Mandolin": SKU = 8; break;
-             case "Flute": SKU = 9; break;
-             case "Harmonica": SKU = 10; break;
-             case "Hat": SKU = 11; break;
-             case "Shirt": SKU = 12; break;
-             case "Bandana": SKU = 13; break;
-             case "PracticeAmp": SKU = 14; break;
-             case "Cable": SKU = 15; break;
-             case "StringAcc": SKU = 16; break;
-             default: SKU = -1; break;
-         }
+         int SKU = switch (item.type) {
+             case "PaperScore" -> 0;
+             case "CD" -> 1;
+             case "Vinyl" -> 2;
+             case "CDPlayer" -> 3;
+             case "RecordPlayer" -> 4;
+             case "MP3" -> 5;
+             case "Guitar" -> 6;
+             case "Bass" -> 7;
+             case "Mandolin" -> 8;
+             case "Flute" -> 9;
+             case "Harmonica" -> 10;
+             case "Hat" -> 11;
+             case "Shirt" -> 12;
+             case "Bandana" -> 13;
+             case "PracticeAmp" -> 14;
+             case "Cable" -> 15;
+             case "StringAcc" -> 16;
+             default -> -1;
+         };
          return SKU;
      }
 
-<<<<<<< HEAD
+    private void getItemName(Message message){
+         message.setExtrainfo(SKUitemclass(message.getSKU()));
+    }
+
     private String SKUitemclass(int SKU){
         String item = switch (SKU) {
             case 0 -> "PaperScore";
@@ -101,56 +95,41 @@ class Store implements ProjectMessage, ItemAccess{
             case 16 -> "StringAcc";
             default -> "undefined";
         };
-=======
-    public static String SKUitemclass(int SKU){
-        String item;
-        switch (SKU){
-            case 0: item = "PaperScore"; break;
-            case 1: item = "CD"; break;
-            case 2: item = "Vinyl"; break;
-            case 3: item = "CDPlayer"; break;
-            case 4: item = "RecordPlayer"; break;
-            case 5: item = "MP3"; break;
-            case 6: item = "Guitar"; break;
-            case 7: item = "Bass"; break;
-            case 8: item = "Mandolin"; break;
-            case 9: item = "Flute"; break;
-            case 10: item = "Harmonica"; break;
-            case 11: item = "Hat"; break;
-            case 12: item = "Shirt"; break;
-            case 13: item = "Bandana"; break;
-            case 14: item = "PracticeAmp"; break;
-            case 15: item = "Cable"; break;
-            case 16: item = "StringAcc"; break;
-            default: item = "undefined"; break;
-        }
->>>>>>> 358aede315c514873e12ac418af7356850d43700
         return item;
     }
 
      //Add all shipped things to the goods list.
      private void cleanMailBox(){
-          mailBox.forEach(entry->
-               goods.forEach(item -> {
-                    if(item.SKU == entry.get(0)) {
-<<<<<<< HEAD
-                         inventorylist[item.SKU] += 3;
-=======
-                         item.amount += 3;
->>>>>>> 358aede315c514873e12ac418af7356850d43700
-                         item.purchasePrice = entry.get(2);
+          mailBox.forEach(entry->{
+                        addItem(false,entry.get(0),entry.get(1),entry.get(2),entry.get(3),3);
                     }
-               })
-          );
+               );
           mailBox.clear();
+          System.out.println("Current stock:");
+          int newLine = 0;
+          for(Item item:goods){
+              if(newLine ==2){
+                  newLine = 0;
+                  System.out.print("\n");
+              }
+              System.out.print(" "+item.name + " "+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")     ");
+              newLine ++;
+          }
+
+          System.out.println();
+          System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
+          System.out.println("End");
      }
 
      private void checkMoney(){
+         System.out.println("The cash register has: "+register);
           if(register<75){
-               scheduler.sendMessage("insufficient_money",null);
+               scheduler.sendMessage(new Message("insufficient_money"));
+               scheduler.withdrawMoney();
+               register += 1000;
           }
           else{
-               scheduler.sendMessage("sufficient_money",null);
+               scheduler.sendMessage(new Message("sufficient_money"));
           }
      }
 
@@ -160,21 +139,55 @@ class Store implements ProjectMessage, ItemAccess{
      }
 
     //return the user the goods list.
-     void sumInventory(ArrayList<Item> input){
-          input.addAll(goods);
+     void sumInventory(Message message){
+          ArrayList<Item> ItemCopy = new ArrayList<>(goods);
+          int[] InventoryCopy = new int[17];
+          System.arraycopy(inventorylist,0,InventoryCopy,0,inventorylist.length);
+          message.put(ItemCopy);
+          message.put(InventoryCopy);
      }
 
-<<<<<<< HEAD
+    void payment(Message message){
+         int paidAmount = Integer.parseInt(message.getExtraInfo());
+         register -= paidAmount;
+         if(register <= 0)System.out.println("Negative money. The staff went ahead to take some money from the bank");
+         scheduler.withdrawMoney();
+         register += 1000;
+    }
 
-=======
+    void removeItem(Message message){
+         goods.removeIf(item->item.name.equals(message.getExtraInfo()));
+         inventorylist[message.getSKU()] --;
+    }
+    void changeListPrice(Message message){
+         goods.forEach(item -> {
+             if (item.name.equals(message.getExtraInfo())){
+                 item.listPrice = Integer.parseInt(message.getExtraInfo());
+             }
+         });
+    }
+    void grapOneItem(Message message){
+         for(Item item : goods){
+             if(item.name.equals(message.getExtraInfo()))message.put(item);
+         }
+    }
+    void addOneItem(Message message){
+         goods.add(message.getItem(0));
+    }
+
      @Override
->>>>>>> 358aede315c514873e12ac418af7356850d43700
-     public void receiveMessage(String event,ArrayList<Item> input) {
-          switch (event) {
+     public void receiveMessage(Message message) {
+          switch (message.getEvent()) {
                case "checkMail" -> cleanMailBox();
                case "checkRegister" -> checkMoney();
                case "add_1000" -> add_1000();
-               case "checkInventory"-> sumInventory(input);
+               case "checkInventory"-> sumInventory(message);
+               case "getItemName"-> getItemName(message);
+               case "payment"-> payment(message);
+               case "removeItem"->removeItem(message);
+               case "changeListPrice"->changeListPrice(message);
+               case  "grapAnItem"->grapOneItem(message);
+               case  "AddOneItem"->addOneItem(message);
           }
      }
 
