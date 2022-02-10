@@ -38,6 +38,7 @@ class Store implements ProjectMessage{
              newItem.condition = input[3];
              newItem.type = SKUitemclass(newItem.SKU);
              newItem.name = newItem.type + random.nextInt()%100;
+             newItem.listPrice = newItem.purchasePrice * 2;
              goods.add(newItem);
              if(!isForInitial)System.out.println(newItem.name+ " has been added to the inventory");
              inventorylist[newItem.SKU] ++;
@@ -172,7 +173,8 @@ class Store implements ProjectMessage{
          }
     }
     void addOneItem(Message message){
-         goods.add(message.getItem(0));
+         Item item = message.getItem(0);
+         if(item.listPrice != item.purchasePrice*2)item.listPrice = item.purchasePrice * 2;
     }
 
      @Override
