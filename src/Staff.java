@@ -126,7 +126,7 @@ class Staff implements ProjectMessage{
            message.put(item);
            scheduler.sendMessage(message);
       }
-
+      //A customer object now can communicate with a store object.
       void OpenTheStore(){
             // TODO: Every time a deal is made, we need to check the inventory and place an order if something runs out of storage.
             // You may choose whatever approach to solve the problem.
