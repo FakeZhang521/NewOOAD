@@ -156,12 +156,14 @@ class Staff implements ProjectMessage{
                   case "work" -> ArriveAtStore();
                   case "insufficient_money" -> GoToBank();
                   case "sufficient_money" -> DoInventory();
+                  /*
                   case "ask_staff_getItemName"->{
                         message.setEvent("getItemName");
                         scheduler.sendMessage(message);
                         message.setEvent("give_user_itemName");
                         scheduler.sendMessage(message);
                   }
+                  */
             }
       }
 }
