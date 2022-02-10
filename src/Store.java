@@ -24,7 +24,7 @@ class Store implements ProjectMessage{
              inventorylist[i]=0;
          }
            for(int x = 0; x<inventorylist.length;x++){
-               addItem(true,x,0,random.nextInt(1,51), random.nextInt(1,6),3);
+               addItem(true,x,0,random.nextInt(1,51), 0,3);
            }
 
      }
@@ -35,7 +35,7 @@ class Store implements ProjectMessage{
              newItem.SKU = input[0];
              newItem.dayArrived = input[1];
              newItem.purchasePrice = input[2];
-             newItem.condition = input[3];
+             newItem.condition = random.nextInt(1,6);
              newItem.type = SKUitemclass(newItem.SKU);
              newItem.name = newItem.type + random.nextInt()%100;
              newItem.listPrice = newItem.purchasePrice * 2;
