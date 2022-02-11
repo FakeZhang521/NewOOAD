@@ -1,9 +1,10 @@
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 
-class Store implements ProjectMessage{
+class Store{
      private double register = 75;
      private final ArrayList<Item> goods;
      final ArrayList<ArrayList<Integer>> mailBox;
@@ -113,8 +114,10 @@ class Store implements ProjectMessage{
      private void printInventory(){
          System.out.println("*****************************************************");
          System.out.println("Current stock:");
+         int value = 0;
          int newLine = 0;
          for(Item item:goods){
+             value += item.purchasePrice;
              if(newLine ==2){
                  newLine = 0;
                  System.out.print("\n");
@@ -123,21 +126,19 @@ class Store implements ProjectMessage{
              newLine ++;
          }
 
-         System.out.println();
+         System.out.println("\nTotal value: "+value);
          System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
          System.out.println("End");
          System.out.println("*****************************************************");
      }
 
-     private void checkMoney(){
+     private void checkMoney(Message message){
          System.out.println("The cash register has: "+register);
           if(register<75){
-               scheduler.sendMessage(new Message("insufficient_money"));
-               scheduler.withdrawMoney();
-               register += 1000;
+               message.setExtrainfo("needMoney");
           }
           else{
-               scheduler.sendMessage(new Message("sufficient_money"));
+              message.setExtrainfo("doNotNeedMoney");
           }
      }
 
@@ -158,9 +159,11 @@ class Store implements ProjectMessage{
     private void payment(Message message){
          int paidAmount = Integer.parseInt(message.getExtraInfo());
          register -= paidAmount;
-         if(register <= 0)System.out.println("Negative money. The staff went ahead to take some money from the bank");
-         scheduler.withdrawMoney();
-         register += 1000;
+         System.out.println("Payment: "+paidAmount);
+         if(register <= 0){
+             System.out.println("Negative money. The staff went ahead to take some money from the bank");
+             scheduler.sendMessage(new Message("gotoBank"));
+         }
     }
 
     private void removeItem(Message message){
@@ -198,11 +201,10 @@ class Store implements ProjectMessage{
              inventorylist[getSKU(item)] ++;
          }
      }
-     @Override
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
                case "checkMail" -> cleanMailBox();
-               case "checkRegister" -> checkMoney();
+               case "checkRegister" -> checkMoney(message);
                case "add_1000" -> add_1000();
                case "checkInventory"-> sumInventory(message);
                case "getItemName"-> getItemName(message);

@@ -1,10 +1,5 @@
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Random;
-
-interface ProjectMessage{
-    void receiveMessage(Message message);
-}
 
 class scheduler{
       private static final Random random = new Random(System.currentTimeMillis());
@@ -13,7 +8,6 @@ class scheduler{
       private static final ArrayList<Store> store = new ArrayList<>();
       private static final ArrayList<Staff> staff = new ArrayList<>();
       private static final ArrayList<ArrayList<Integer>> waitingQue = new ArrayList<>();
-      private static int state;
 
       static void startEmulation() throws IllegalAccessException {
              Store store = new Store();
@@ -103,5 +97,6 @@ class scheduler{
       }
       static void withdrawMoney(){
           bankMoney += 1000;
+          sendMessage(new Message("add_1000"));
       }
 }
