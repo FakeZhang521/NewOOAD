@@ -94,12 +94,12 @@ class Store implements ProjectMessage{
             case 15 -> "Cable";
             case 16 -> "StringAcc";
             default -> "undefined";
-        };
+        };/////
         return item;
     }
 
      //Add all shipped things to the goods list.
-     private void cleanMailBox(){
+     private void cleanMailBox(){////
           mailBox.forEach(entry->{
                         addItem(false,entry.get(0),entry.get(1),entry.get(2),entry.get(3),3);
                     }
