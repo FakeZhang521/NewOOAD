@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-class Message {
+class Message { //implements POLYMORPHISM
      private int SKU;
      private String event;
      private ArrayList<Item> items;
