@@ -1,10 +1,19 @@
-class Stringed extends Instrument
-{
-    private String electric;
+class Stringed extends Instrument{
+    protected String electric;
     
-    public Stringed(String electric)
+     Stringed(String electric)
     {
         this.electric = electric;
+    }
+  
+    public String getElectric()
+    {
+        return electric;
+    }
+    
+    public void setElectric(String isElectric)
+    {
+        electic = isElectric;
     }
 }
 
