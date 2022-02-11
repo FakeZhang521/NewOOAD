@@ -38,7 +38,7 @@ class scheduler{
              sendMessage(new Message("printInventory"));
              sendMessage(new Message("printSoldItem"));
              sendMessage(new Message("printCash"));
-             System.out.println(bankMoney);
+             System.out.println("Band debt is: "+ bankMoney);
       }
       static void shipToStore(){
             for(ArrayList<Integer> x:waitingQue){

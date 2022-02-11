@@ -134,9 +134,12 @@ class Staff{
       //A customer object now can communicate with a store object.
       void OpenTheStore(){
             // TODO: Every time a deal is made, we need to check the inventory and place an order if something runs out of storage.
+            System.out.println("====================================================================================");
             // You may choose whatever approach to solve the problem.
             //However, please consider using the message-passing style I have used in my code.
+            //A test
             System.out.println("Store is open for customers");
+            System.out.println("====================================================================================");
             CleanTheStore();
       }
 
