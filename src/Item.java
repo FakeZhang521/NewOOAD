@@ -1,4 +1,4 @@
-abstract class Item {
+abstract class Item {////INHERITANCE -> we can see that multiple classes inherit the traits of clas Item
         int SKU;
         String type;
         String name;
