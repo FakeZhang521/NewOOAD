@@ -124,7 +124,7 @@ class Store{
              }
              System.out.print(" "+item.name + " "+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")     ");
              newLine ++;
-         }/////
+         }
 
          System.out.println("\nTotal value: "+value);
          System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
