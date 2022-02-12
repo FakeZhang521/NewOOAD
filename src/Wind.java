@@ -10,7 +10,7 @@ class Harmonica extends Wind{
     protected String key;
     public String getKey() //example of getters and setter -> ENCAPSULATION
     {
-        return Key;
+        return key;
     }
 
     public void setKey(String inKey)

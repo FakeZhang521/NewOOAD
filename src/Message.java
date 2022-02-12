@@ -7,6 +7,7 @@ class Message { //implements POLYMORPHISM
      private int[] numbers;
      private String extrainfo;
      private String eextrainfo;
+    private ArrayList<Customer> customers;
 
 
      Message(){
@@ -88,6 +89,10 @@ class Message { //implements POLYMORPHISM
          numbers = null;
          items = null;
      }
+
+    ArrayList<Customer> viewCustomers(){
+        return customers;
+    }
 
 
 }

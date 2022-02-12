@@ -138,6 +138,28 @@ class Staff{
             // You may choose whatever approach to solve the problem.
             //However, please consider using the message-passing style I have used in my code.
             //A test
+            Message message = new Message("viewCustomerLine");
+            ArrayList<Customer> customers = message.viewCustomers();
+            int sellodds;
+            int condmod;
+            boolean discount;
+            boolean sold;
+            for(Customer customer:customers){
+                  sellodds=random.nextInt(1, 2);
+                  if(customer.type=="buying"){
+                  }
+                  else if(customer.type=="selling"){
+                        switch(customer.item.condition){
+                              case 1: condmod=random.nextInt(1, 2); break;
+                              case 2: condmod=random.nextInt(2, 4); break;
+                              case 3: condmod=random.nextInt(4, 7); break;
+                              case 4: condmod=random.nextInt(5, 10); break;
+                              case 5: condmod=random.nextInt(7, 15); break;
+                        }
+
+                  }
+            }
+
             System.out.println("Store is open for customers");
             System.out.println("====================================================================================");
             CleanTheStore();

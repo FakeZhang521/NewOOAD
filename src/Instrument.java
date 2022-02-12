@@ -1,10 +1,5 @@
 class Stringed extends Instrument{
     protected String electric;
-    
-     Stringed(String electric)
-    {
-        this.electric = electric;
-    }
   
     public String getElectric()
     {
@@ -13,7 +8,7 @@ class Stringed extends Instrument{
     
     public void setElectric(String isElectric)
     {
-        electic = isElectric;
+        electric = isElectric;
     }
 }
 

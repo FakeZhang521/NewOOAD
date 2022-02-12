@@ -201,6 +201,54 @@ class Store{
              inventorylist[getSKU(item)] ++;
          }
      }
+
+    private ArrayList<Customer> viewCustomers(){
+        ArrayList<Customer> customers = new ArrayList<>();
+        int buying_customers = random.nextInt(4, 10);
+        int selling_customers = random.nextInt(1, 4);
+
+        while ((buying_customers != 0) && (selling_customers != 0)){
+            int SKU = random.nextInt(0, 16);
+            String randomitem = SKUitemclass(SKU);
+            Item newItem = ItemFactory.createItem(randomitem);
+            Customer newcustomer = new Customer();
+            int property=random.nextInt(1, 5);
+            newItem.condition=property;
+            property=random.nextInt(1, 2);
+            if(property==1){
+                newItem.used=true;
+            }
+            else{
+                newItem.used=false;
+            }
+            newcustomer.item=newItem;
+            if(buying_customers == 0){
+                newcustomer.type="Selling";
+                customers.add(newcustomer);
+                selling_customers--;
+            }
+            else if(selling_customers == 0){
+                newcustomer.type="Buying";
+                customers.add(newcustomer);
+                buying_customers--;
+            }
+            else{
+                int select = random.nextInt(1, 2);
+                if(select == 1){
+                    newcustomer.type="Selling";
+                    customers.add(newcustomer);
+                    selling_customers--;
+                }
+                else if(select == 2){
+                    newcustomer.type="Buying";
+                    customers.add(newcustomer);
+                    buying_customers--;
+                }
+            }
+        }
+        return customers;
+    }
+
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
                case "checkMail" -> cleanMailBox();
@@ -217,6 +265,7 @@ class Store{
                case  "printInventory"->printInventory();
                case  "removeBrokenItem"->removeALLBrokentItem();
                case  "printCash"->System.out.println("Cash Register has: "+ register);
+               case  "viewCustomerLine"->viewCustomers();
           }
      }
 
