@@ -167,7 +167,7 @@ class Staff{
                   else if(customer.type.equals("selling")){
                         item=customer.item;
                         condmod = EvalItem(item);
-                        price=random.nextInt(1,20)+condmod;
+                        price=item.purchasePrice+condmod;
                         if(odds){
                               sold=true;
                               pricechange=false;
@@ -186,13 +186,13 @@ class Staff{
                            else {
                                  System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+" for $"+price);
                            }
+                           Message newMessage = new Message("addBoughtItem");
+                           newMessage.put(item);
+                           scheduler.sendMessage(newMessage);
                         }
                         else {
-                              System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+" for $"+price);
+                              System.out.println(name+" wants to buy"+"but the price is too high");
                         }
-                        Message newMessage = new Message("addBoughtItem");
-                        newMessage.put(item);
-                        scheduler.sendMessage(newMessage);
                   }
             }
             message.clear();

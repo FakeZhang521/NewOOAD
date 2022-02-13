@@ -37,7 +37,7 @@ interface ItemFactory {
             item.condition = random.nextInt(1,6);
             item.daySold = -1;
             item.dayArrived = 0;
-            item.purchasePrice = random.nextInt(3,50);
+            item.purchasePrice = random.nextInt(5,60);
             item.listPrice = -1;
             return  item;
         }

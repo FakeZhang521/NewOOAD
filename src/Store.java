@@ -172,10 +172,11 @@ class Store{
     //The worker will call this function to check if the register has the enough money to do something
     private void payment(Message message){
          double paidAmount = Double.parseDouble(message.getExtraInfo());
+         double register_before = register;
          register -= paidAmount;
          System.out.println("Payment: "+paidAmount);
+         System.out.println("register now has: "+register+",before: "+register_before);
          if(register <= 0){
-             System.out.println("Negative money. The staff went ahead to take some money from the bank");
              scheduler.sendMessage(new Message("gotoBank"));
          }
     }
@@ -225,6 +226,7 @@ class Store{
          Item item = message.getItem(0);
          Message message1 = new Message();
          message1.setExtrainfo(String.valueOf(item.purchasePrice));
+         payment(message1);
          goods.add(item);
          recountInventory();
     }
@@ -240,6 +242,7 @@ class Store{
              if(item.name.equals(message.getEExtrainfo()))soldList.add(item);
          }
          register += Double.parseDouble(message.getExtraInfo());
+         System.out.println("register now has: "+register);
          Message message1 = new Message("");
          message1.setExtrainfo(message.getEExtrainfo());
          removeItem(message1);
