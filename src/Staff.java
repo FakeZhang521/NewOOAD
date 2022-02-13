@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 class Staff{
@@ -133,14 +134,11 @@ class Staff{
       }
       //A customer object now can communicate with a store object.
       void OpenTheStore(){
-            // TODO: Every time a deal is made, we need to check the inventory and place an order if something runs out of storage.
             System.out.println("====================================================================================");
-            // You may choose whatever approach to solve the problem.
-            //However, please consider using the message-passing style I have used in my code.
-            //A test
+            System.out.println("Now, "+name+" starts to welcome customers");
             Message message = new Message("viewCustomerLine");
-            ArrayList<Customer> customers = message.viewCustomers();
-            int sellodds;
+            ArrayList<Customer> customers = scheduler.createCustomers();
+            boolean odds;
             int condmod;
             double price;
             boolean pricechange=false;
@@ -148,60 +146,88 @@ class Staff{
             Item item;
             int count=1;
             for(Customer customer:customers){
-                  sellodds=random.nextInt(1, 2);
-                  if(customer.type=="buying"){
-                  }
-                  else if(customer.type=="selling"){
-                        item=customer.item;
-                        switch(item.condition){
-                              case 1: condmod=random.nextInt(1, 2); break;
-                              case 2: condmod=random.nextInt(2, 4); break;
-                              case 3: condmod=random.nextInt(4, 7); break;
-                              case 4: condmod=random.nextInt(5, 10); break;
-                              case 5: condmod=random.nextInt(7, 15); break;
-                              default: condmod=0;
+                  odds=random.nextBoolean();
+                  if(customer.type.equals("buying")){
+                        if(odds){
+                              Message getItemList = new Message("showRelatedItem");
+                              getItemList.setExtrainfo(String.valueOf(customer.desireType));
+                              scheduler.sendMessage(getItemList);
+                              ArrayList<Item> ItemList = getItemList.getItems();
+                              for(Item itemInStock:ItemList){
+                                      odds = random.nextBoolean();
+                                      if(odds){
+                                            itemInStock.salesPrice = itemInStock.listPrice;
+                                            itemInStock.daySold = scheduler.getDay();
+                                            System.out.println(name+"sold a "+itemInStock.name+" in "+itemInStock.getCondition()+" to Customer "+count+"at $"+ itemInStock.salesPrice);
+                                            Message newMessage = new Message("Item sold");
+                                            newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
+                                            newMessage.putEExtrainfo(itemInStock.name);
+                                            scheduler.sendMessage(newMessage);
+                                            break;
+                                      }
+                                      else if(random.nextInt(0,75)<=75){
+                                            itemInStock.salesPrice = Math.round(itemInStock.listPrice * 0.9 );
+                                            itemInStock.daySold = scheduler.getDay();
+                                            System.out.println(name+" sold a "+itemInStock.name+" in condition:"+itemInStock.getCondition()+" to Customer "+count+"at a 10% decrease for $"+itemInStock.salesPrice);
+                                            Message newMessage = new Message("Item sold");
+                                            newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
+                                            newMessage.putEExtrainfo(itemInStock.name);
+                                            scheduler.sendMessage(newMessage);
+                                            break;
+                                      }
+                                      else{
+                                            System.out.println("Customer"+count+" leaves because there is nothing he wants");
+                                            break;
+                                      }
+                              };
+                              ItemList.removeIf(item1 -> item1.daySold != -1);// TODO: 2/12/2022 Change item
                         }
+                  }
+                  else if(customer.type.equals("selling")){
+                        item=customer.item;
+                        condmod = EvalItem(item);
                         price=random.nextInt(1,20)+condmod;
-                        if(sellodds==1){
+                        if(odds){
                               sold=true;
                               pricechange=false;
                         }
-                        else if(sellodds==2){
-                              sellodds=random.nextInt(1,4);
-                              if(sellodds==4){
-                                    sold=false;
-                              }
-                              else{
-                                    sold=true;
-                                    pricechange=true;
-                                    price=price*(0.9);
-                              }
+                        else if(random.nextInt(0,75)<=75){
+                              sold = true;
+                              pricechange=true;
+                              price = Math.round(price*(0.9));
                         }
                         if(sold){
                            item.purchasePrice=price;
                            item.listPrice=2*price;
                            if(pricechange){
-                                 System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+"at a 10% increase for $"+price);
+                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+"at a 10% increase for $"+price);
                            }
-                           else if (!pricechange){
-                                 System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+" for $"+price);
+                           else {
+                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+" for $"+price);
                            }
-                           goods.
                         }
-                        else if(!sold){
-                              System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+" for $"+price);
+                        else {
+                              System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+" for $"+price);
                         }
-                        customers.remove(count);
-                        count++;
-
+                        Message newMessage = new Message("addBoughtItem");
+                        newMessage.put(item);
+                        scheduler.sendMessage(newMessage);
                   }
             }
-
-            System.out.println("Store is open for customers");
+            message.clear();
             System.out.println("====================================================================================");
             CleanTheStore();
       }
-
+      private int EvalItem(Item item){
+            return switch (item.condition) {
+                  case 1 -> random.nextInt(1, 2);
+                  case 2 -> random.nextInt(2, 4);
+                  case 3 -> random.nextInt(4, 7);
+                  case 4 -> random.nextInt(5, 10);
+                  case 5 -> random.nextInt(7, 15);
+                  default -> throw new IllegalStateException("Condition cannot be zero");
+            };
+      }
       private void CleanTheStore(){
             System.out.println();
             System.out.println("Eight hours has passed. "+name+" starts to clean the store and prepare to go home\n");
@@ -234,7 +260,7 @@ class Staff{
       }
 
       private void LeaveTheStore(){
-            System.out.println(name +"locked the door and went back home");
+            System.out.println(name +" locked the door and went back home");
 
       }
 

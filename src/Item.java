@@ -1,4 +1,4 @@
-abstract class Item {////INHERITANCE -> we can see that multiple classes inherit the traits of clas Item
+abstract class Item{////INHERITANCE -> we can see that multiple classes inherit the traits of clas Item
         int SKU;
         String type;
         String name;
@@ -8,7 +8,7 @@ abstract class Item {////INHERITANCE -> we can see that multiple classes inherit
         int dayArrived;
         int condition;
         double salesPrice;
-        int daySold;
+        int daySold =-1;
 
         String getCondition(){
                 String result;
@@ -22,6 +22,7 @@ abstract class Item {////INHERITANCE -> we can see that multiple classes inherit
                 }
                 return result;
         }
+
 }
 
 class Music extends Item{

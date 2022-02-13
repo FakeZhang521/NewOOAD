@@ -1,6 +1,8 @@
 import java.util.Objects;
+import java.util.Random;
 
 interface ItemFactory {
+       Random random = new Random();
         static  Item createItem(String itemName){
                 Item result;
             switch (itemName) {
@@ -25,5 +27,18 @@ interface ItemFactory {
             }
             if(result == null)throw new IllegalStateException("creation cannot be null");
             return result;
+        }
+        static Item randomItem(String itemType){
+            Item item = createItem(itemType);
+            item.type = itemType;
+            item.SKU = Store.getSKU(item);
+            item.name = item.type + random.nextInt(1,1300);
+            item.used = random.nextBoolean();
+            item.condition = random.nextInt(1,6);
+            item.daySold = -1;
+            item.dayArrived = 0;
+            item.purchasePrice = random.nextInt(3,50);
+            item.listPrice = -1;
+            return  item;
         }
 }

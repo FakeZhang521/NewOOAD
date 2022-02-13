@@ -57,7 +57,7 @@ class Message { //implements POLYMORPHISM
          this.items = items;
      }
      void putEExtrainfo(String input){
-          extrainfo = input;
+          eextrainfo= input;
      }
      void put(Item input){
          items.add(input);
@@ -80,6 +80,9 @@ class Message { //implements POLYMORPHISM
      }
      String getExtraInfo(){
          return extrainfo;
+     }
+     String getEExtrainfo(){
+         return eextrainfo;
      }
      String getEvent(){
          return event;

@@ -49,7 +49,7 @@ class Store{
      }
 
 
-     private int getSKU(Item item){
+     static int getSKU(Item item){
          int SKU = switch (item.type) {
              case "PaperScore" -> 0;
              case "CD" -> 1;
@@ -77,7 +77,7 @@ class Store{
          message.setExtrainfo(SKUitemclass(message.getSKU()));
     }
 
-    private String SKUitemclass(int SKU){
+    static String SKUitemclass(int SKU){
         String item = switch (SKU) {
             case 0 -> "PaperScore";
             case 1 -> "CD";
@@ -122,7 +122,7 @@ class Store{
                  newLine = 0;
                  System.out.print("\n");
              }
-             System.out.print(" "+item.name + " "+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")     ");
+             System.out.print("\t"+item.name + "\t"+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")\t\t");
              newLine ++;
          }
 
@@ -130,6 +130,21 @@ class Store{
          System.out.println("Total numbers: "+ Arrays.stream(inventorylist).sum());
          System.out.println("End");
          System.out.println("*****************************************************");
+         System.out.println("Sold Item");
+         value = 0;
+         newLine = 0;
+         for(Item sold:soldList){
+             value += sold.salesPrice;
+             if(newLine ==2){
+                 newLine = 0;
+                 System.out.print("\n");
+             }
+             System.out.print("\t"+sold.name + "\t"+"(soldPrice:"+ sold.salesPrice+",daysold:"+sold.daySold+")\t\t");
+             newLine ++;
+         }
+         System.out.println("\nTotal Sales: "+value);
+         System.out.println("Total numbers: "+ soldList.size());
+         System.out.println("\n*****************************************************");
      }
 
      private void checkMoney(Message message){
@@ -169,7 +184,6 @@ class Store{
     private void removeItem(Message message){
          goods.removeIf(item->item.name.equals(message.getExtraInfo()));
          inventorylist[message.getSKU()] -= 1;
-         System.out.println(message.getExtraInfo()+" has been removed from the inventory");
     }
     private void changeListPrice(Message message){
          goods.forEach(item -> {
@@ -186,6 +200,8 @@ class Store{
     private void addOneItem(Message message){
          Item item = message.getItem(0);
          if(item.listPrice != item.purchasePrice*2)item.listPrice = item.purchasePrice * 2;
+         goods.add(item);
+         recountInventory();
     }
 
     private void grabAllGoods(Message message){
@@ -202,56 +218,27 @@ class Store{
          }
      }
 
-    private ArrayList<Customer> viewCustomers(){
-        ArrayList<Customer> customers = new ArrayList<>();
-        int buying_customers = random.nextInt(4, 10);
-        int selling_customers = random.nextInt(1, 4);
-
-        while ((buying_customers != 0) && (selling_customers != 0)){
-            int SKU = random.nextInt(0, 16);
-            String randomitem = SKUitemclass(SKU);
-            Item newItem = ItemFactory.createItem(randomitem);
-            Customer newcustomer = new Customer();
-            int property=random.nextInt(1, 5);
-            newItem.condition=property;
-            property=random.nextInt(1, 2);
-            if(property==1){
-                newItem.used=true;
-            }
-            else{
-                newItem.used=false;
-            }
-            newcustomer.item=newItem;
-            if(buying_customers == 0){
-                newcustomer.type="Selling";
-                customers.add(newcustomer);
-                selling_customers--;
-            }
-            else if(selling_customers == 0){
-                newcustomer.type="Buying";
-                customers.add(newcustomer);
-                buying_customers--;
-            }
-            else{
-                int select = random.nextInt(1, 2);
-                if(select == 1){
-                    newcustomer.type="Selling";
-                    customers.add(newcustomer);
-                    selling_customers--;
-                }
-                else if(select == 2){
-                    newcustomer.type="Buying";
-                    customers.add(newcustomer);
-                    buying_customers--;
-                }
-            }
-        }
-        return customers;
-    }
-
     private void addBoughtItem(Message message){
-
+         Item item = message.getItem(0);
+         register -= item.purchasePrice;
+         goods.add(item);
+         recountInventory();
     }
+
+     private void showRelatedItem(Message message){
+         goods.forEach(item -> {
+             if(item.SKU == Integer.parseInt(message.getExtraInfo()))message.put(item);
+         });
+     }
+     private void ItemSold(Message message){
+         for(Item item:goods){
+             if(item.name.equals(message.getEExtrainfo()))soldList.add(item);
+         }
+         register += Double.parseDouble(message.getExtraInfo());
+         Message message1 = new Message("");
+         message1.setExtrainfo(message.getEExtrainfo());
+         removeItem(message1);
+     }
 
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
@@ -269,8 +256,9 @@ class Store{
                case  "printInventory"->printInventory();
                case  "removeBrokenItem"->removeALLBrokentItem();
                case  "printCash"->System.out.println("Cash Register has: "+ register);
-               case  "viewCustomerLine"->viewCustomers();
                case  "addBoughtItem"->addBoughtItem(message);
+              case   "showRelatedItem"->showRelatedItem(message);
+              case   "Item sold"->ItemSold(message);
           }
      }
 
