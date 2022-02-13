@@ -121,7 +121,7 @@ class Store{
                  newLine = 0;
                  System.out.print("\n");
              }
-             System.out.print("\t"+item.name + "\t"+"(cost:"+ item.purchasePrice+",condition:"+item.getCondition()+")\t\t");
+             System.out.print("\t"+item.name + "\t"+"(cost:"+ item.purchasePrice+",list price: "+item.listPrice+" condition:"+item.getCondition()+")\t\t");
              newLine ++;
          }
 
@@ -138,7 +138,7 @@ class Store{
                  newLine = 0;
                  System.out.print("\n");
              }
-             System.out.print("\t"+sold.name + "\t"+"(soldPrice:"+ sold.salesPrice+",daysold:"+sold.daySold+")\t\t");
+             System.out.print("\t"+sold.name + "\t"+"(soldPrice:"+ sold.salesPrice+" cost: "+sold.purchasePrice+" ,daysold:"+sold.daySold+")\t\t");
              newLine ++;
          }
          System.out.println("\nTotal Sales: "+value);
@@ -241,8 +241,9 @@ class Store{
          for(Item item:goods){
              if(item.name.equals(message.getEExtrainfo()))soldList.add(item);
          }
+         double register_before = register;
          register += Double.parseDouble(message.getExtraInfo());
-         System.out.println("register now has: "+register);
+         System.out.println("register now has: "+register+",before: "+register_before);
          Message message1 = new Message("");
          message1.setExtrainfo(message.getEExtrainfo());
          removeItem(message1);

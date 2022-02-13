@@ -127,50 +127,50 @@ class Staff{
             Item item;
             int count=1;
             for(Customer customer:customers){
-                  odds=random.nextBoolean();
+                  pricechange = false;
+                  sold = false;
                   if(customer.type.equals("buying")){
-                        if(odds){
-                              Message getItemList = new Message("showRelatedItem");
-                              getItemList.setExtrainfo(String.valueOf(customer.desireType));
-                              scheduler.sendMessage(getItemList);
-                              ArrayList<Item> ItemList = getItemList.getItems();
-                              for(Item itemInStock:ItemList){
-                                      odds = random.nextBoolean();
-                                      if(odds){
-                                            itemInStock.salesPrice = itemInStock.listPrice;
-                                            itemInStock.daySold = scheduler.getDay();
-                                            System.out.println(name+"sold a "+itemInStock.name+" in "+itemInStock.getCondition()+" to Customer "+count+"at $"+ itemInStock.salesPrice);
-                                            Message newMessage = new Message("Item sold");
-                                            newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
-                                            newMessage.putEExtrainfo(itemInStock.name);
-                                            scheduler.sendMessage(newMessage);
-                                            break;
-                                      }
-                                      else if(random.nextInt(0,75)<=75){
-                                            itemInStock.salesPrice = Math.round(itemInStock.listPrice * 0.9 );
-                                            itemInStock.daySold = scheduler.getDay();
-                                            System.out.println(name+" sold a "+itemInStock.name+" in condition:"+itemInStock.getCondition()+" to Customer "+count+"at a 10% decrease for $"+itemInStock.salesPrice);
-                                            Message newMessage = new Message("Item sold");
-                                            newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
-                                            newMessage.putEExtrainfo(itemInStock.name);
-                                            scheduler.sendMessage(newMessage);
-                                            break;
-                                      }
-                                      else{
-                                            System.out.println("Customer"+count+" leaves because there is nothing he wants");
-                                            break;
-                                      }
-                              };
-                              ItemList.removeIf(item1 -> item1.daySold != -1);
-                        }
+                        if(random.nextBoolean())continue;
+                        Message getItemList = new Message("showRelatedItem");
+                        getItemList.setExtrainfo(String.valueOf(customer.desireType));
+                        scheduler.sendMessage(getItemList);
+                        ArrayList<Item> ItemList = getItemList.getItems();
+                        for(Item itemInStock:ItemList){
+                                odds = random.nextBoolean();
+                                if(odds){
+                                      itemInStock.salesPrice = itemInStock.listPrice;
+                                      itemInStock.daySold = scheduler.getDay();
+                                      System.out.println(name+" sold a "+itemInStock.name+" in "+itemInStock.getCondition()+" to "+customer.name+"at $"+ itemInStock.salesPrice);
+                                      Message newMessage = new Message("Item sold");
+                                      newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
+                                      newMessage.putEExtrainfo(itemInStock.name);
+                                      scheduler.sendMessage(newMessage);
+                                      break;
+                                }
+                                else if(random.nextInt(0,75)<=75){
+                                      itemInStock.salesPrice = Math.round(itemInStock.listPrice * 0.9 );
+                                      itemInStock.daySold = scheduler.getDay();
+                                      System.out.println(name+" sold a "+itemInStock.name+" in condition:"+itemInStock.getCondition()+" to "+customer.name+"at a 10% decrease for $"+itemInStock.salesPrice);
+                                      Message newMessage = new Message("Item sold");
+                                      newMessage.setExtrainfo(String.valueOf(itemInStock.salesPrice));
+                                      newMessage.putEExtrainfo(itemInStock.name);
+                                      scheduler.sendMessage(newMessage);
+                                      break;
+                                }
+                                else{
+                                      System.out.println("Customer"+count+" leaves because there is nothing he wants");
+                                      break;
+                                }
+                        };
+                        ItemList.removeIf(item1 -> item1.daySold != -1);
                   }
                   else if(customer.type.equals("selling")){
+                        odds = random.nextBoolean();
                         item=customer.item;
                         condmod = EvalItem(item);
                         price=item.purchasePrice+condmod;
                         if(odds){
                               sold=true;
-                              pricechange=false;
                         }
                         else if(random.nextInt(0,75)<=75){
                               sold = true;
@@ -181,10 +181,10 @@ class Staff{
                            item.purchasePrice=price;
                            item.listPrice=2*price;
                            if(pricechange){
-                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+"at a 10% increase for $"+price);
+                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from "+customer.name+" at a 10% increase for $"+price);
                            }
                            else {
-                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from Customer"+count+" for $"+price);
+                                 System.out.println(name+" bought a "+item.name+" in "+item.condition+" from "+customer.name+" for $"+price);
                            }
                            Message newMessage = new Message("addBoughtItem");
                            newMessage.put(item);
