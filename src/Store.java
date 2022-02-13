@@ -1,4 +1,3 @@
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -30,7 +29,7 @@ class Store{
            }
 
      }
-
+    //A function designed to handle the initialization process.
      private void addItem(boolean isForInitial,int ... input){
          for(int x =0;x<input[4];x++){
              Item newItem = ItemFactory.createItem(SKUitemclass(input[0]));
@@ -110,7 +109,7 @@ class Store{
                );
           mailBox.clear();
      }
-
+     //A hugh function to print whatever the current information is
      private void printInventory(){
          System.out.println("*****************************************************");
          System.out.println("Current stock:");
@@ -170,9 +169,9 @@ class Store{
           message.put(ItemCopy);
           message.put(InventoryCopy);
      }
-
+    //The worker will call this function to check if the register has the enough money to do something
     private void payment(Message message){
-         int paidAmount = Integer.parseInt(message.getExtraInfo());
+         double paidAmount = Double.parseDouble(message.getExtraInfo());
          register -= paidAmount;
          System.out.println("Payment: "+paidAmount);
          if(register <= 0){
@@ -180,7 +179,7 @@ class Store{
              scheduler.sendMessage(new Message("gotoBank"));
          }
     }
-
+   //Remove one item.
     private void removeItem(Message message){
          goods.removeIf(item->item.name.equals(message.getExtraInfo()));
          inventorylist[message.getSKU()] -= 1;
@@ -192,44 +191,50 @@ class Store{
              }
          });
     }
-    private void grapOneItem(Message message){
+    //Grab oneItem
+    private void grabOneItem(Message message){
          for(Item item : goods){
              if(item.name.equals(message.getExtraInfo()))message.put(item);
          }
     }
+    //Add one item.
     private void addOneItem(Message message){
          Item item = message.getItem(0);
          if(item.listPrice != item.purchasePrice*2)item.listPrice = item.purchasePrice * 2;
          goods.add(item);
          recountInventory();
     }
-
+    //A convenient function to grab all things.
     private void grabAllGoods(Message message){
          message.put(goods);
     }
+    //A convenient function to remove all broken things.
     private void removeALLBrokentItem(){
          goods.removeIf(item -> item.condition <=0);
          recountInventory();
     }
+    //Everytime there is modification made to the inventory, we should recount what we have.
      private void recountInventory(){
          inventorylist = new int[17];
          for(Item item: goods){
              inventorylist[getSKU(item)] ++;
          }
      }
-
+   //We should add what we bought to the inventory
     private void addBoughtItem(Message message){
          Item item = message.getItem(0);
-         register -= item.purchasePrice;
+         Message message1 = new Message();
+         message1.setExtrainfo(String.valueOf(item.purchasePrice));
          goods.add(item);
          recountInventory();
     }
-
+    //If the customer wants to buy something, we should only show the stuff that he wants to buy.
      private void showRelatedItem(Message message){
          goods.forEach(item -> {
              if(item.SKU == Integer.parseInt(message.getExtraInfo()))message.put(item);
          });
      }
+     //If the staff sold something, we should change the inventory and put the item in the soldlist.
      private void ItemSold(Message message){
          for(Item item:goods){
              if(item.name.equals(message.getEExtrainfo()))soldList.add(item);
@@ -239,7 +244,7 @@ class Store{
          message1.setExtrainfo(message.getEExtrainfo());
          removeItem(message1);
      }
-
+     //This class will take care of the scheduler's sendMessage function.
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
                case "checkMail" -> cleanMailBox();
@@ -250,7 +255,7 @@ class Store{
                case "payment"-> payment(message);
                case "removeItem"->removeItem(message);
                case "changeListPrice"->changeListPrice(message);
-               case  "grapAnItem"->grapOneItem(message);
+               case  "grapAnItem"-> grabOneItem(message);
                case  "AddOneItem"->addOneItem(message);
                case  "grabAllGoods"-> grabAllGoods(message);
                case  "printInventory"->printInventory();

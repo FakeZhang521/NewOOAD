@@ -4,8 +4,8 @@ import java.util.Random;
 
 class Staff{
       private final String name;
-      int dayWorked;
-      boolean workToday = false;
+      int dayWorked;//this attributes keep track of the continuous work days.
+      boolean workToday = false;//A flag attribute. if the worker does not work today, then he will not respond any message
       private static final Random random = new Random(System.currentTimeMillis());
       Staff(String name){
             this.name = name;
@@ -53,13 +53,17 @@ class Staff{
       //(3) Since we are just working on a single-thread program right now, No need to fear of synchronization problems.
       //(4) Once the line "int totalValue = 0" gets executed, buffer has access to the item list.
       //(5) the rest is a piece of cake.
+      ///NOTICE!!!!!! throughout the program, we have used this trick excessively.
+      //Basically, we will firstly decalre a message object that can references the other object.
+      //And pass it around to get a "pointer" to a "remote" object
       private void DoInventory(){
             int totalValue = 0;
             System.out.println();
             System.out.println(name+" will start checking inventory");
-            Message pack = new Message();
-            pack.setEvent("checkInventory");
-            scheduler.sendMessage(pack);
+            Message pack = new Message();//Create an object
+            pack.setEvent("checkInventory");//Set the message
+            scheduler.sendMessage(pack);//call the scheduler to send the message.
+            // No need to pass it back since we pass the object by reference.
 
             ArrayList<Item> items = pack.getItems();
             int[] inventory = pack.getIntegerArray();
@@ -72,7 +76,7 @@ class Staff{
                         grapItemName.setSKU(x);
                         scheduler.sendMessage(grapItemName);
                         System.out.println(grapItemName.getExtraInfo()+" is out of stock");
-                        var DidweOrder = scheduler.checkIfOrder(x);
+                        var DidweOrder = scheduler.checkIfOrder(x);//Ask to scheduler class to check If the staff has already ordered this before.
                         if(DidweOrder)System.out.println("But we have already bought some.");
                         else{
                               PlaceAnOrder(x,grapItemName.getExtraInfo());
@@ -108,31 +112,8 @@ class Staff{
             scheduler.scheduleShipping(newOrder);
       }
 
-      private void removeItem(String ItemName){
-           Message message = new Message("removeItem");
-           message.setExtrainfo(ItemName);
-           scheduler.sendMessage(message);
-      }
-
-      private void changeItemListPrice(String ItemName,int amount){
-           Message message = new Message("changeListPrice");
-           message.setExtrainfo(ItemName);
-           message.putEExtrainfo(String.valueOf(amount));
-           scheduler.sendMessage(message);
-      }
-
-      private void grapAnItem(String name){
-           Message message = new Message("grapAnItem");
-           message.setExtrainfo(name);
-           scheduler.sendMessage(message);
-      }
-
-      private void AddOneItem(Item item){
-           Message message = new Message("addOneItem");
-           message.put(item);
-           scheduler.sendMessage(message);
-      }
-      //A customer object now can communicate with a store object.
+      //We might do better if we had time to spread some responsibility to the customer class.
+      //Since we did not have time, that's why right now there is a such gigantic function.
       void OpenTheStore(){
             System.out.println("====================================================================================");
             System.out.println("Now, "+name+" starts to welcome customers");
@@ -180,7 +161,7 @@ class Staff{
                                             break;
                                       }
                               };
-                              ItemList.removeIf(item1 -> item1.daySold != -1);// TODO: 2/12/2022 Change item
+                              ItemList.removeIf(item1 -> item1.daySold != -1);
                         }
                   }
                   else if(customer.type.equals("selling")){
@@ -228,6 +209,8 @@ class Staff{
                   default -> throw new IllegalStateException("Condition cannot be zero");
             };
       }
+
+      //Clean the store. The staff will grab all stuff from the store and intentionally break the item as much as he can.
       private void CleanTheStore(){
             System.out.println();
             System.out.println("Eight hours has passed. "+name+" starts to clean the store and prepare to go home\n");
