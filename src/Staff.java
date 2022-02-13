@@ -130,7 +130,14 @@ class Staff{
                   pricechange = false;
                   sold = false;
                   if(customer.type.equals("buying")){
-                        if(random.nextBoolean())continue;
+                        if(random.nextBoolean()){
+                              //Our assumption is that the customer will look at every item that is in his desirable category,
+                              //and every item has 50% to be sold.
+                              //However, we add this to give a balance between sold and bought numbers of item.
+                              //This change is not included in the output.pdf file.
+                              System.out.println(customer.name+" leaves because he changes his mind right before looking up stuff");
+                              continue;
+                        };
                         Message getItemList = new Message("showRelatedItem");
                         getItemList.setExtrainfo(String.valueOf(customer.desireType));
                         scheduler.sendMessage(getItemList);
@@ -177,6 +184,7 @@ class Staff{
                               pricechange=true;
                               price = Math.round(price*(0.9));
                         }
+
                         if(sold){
                            item.purchasePrice=price;
                            item.listPrice=2*price;
