@@ -1,12 +1,13 @@
 import java.util.ArrayList;
 
-class Message {
+class Message { //implements POLYMORPHISM
      private int SKU;
      private String event;
      private ArrayList<Item> items;
      private int[] numbers;
      private String extrainfo;
      private String eextrainfo;
+    private ArrayList<Customer> customers;
 
 
      Message(){
@@ -88,6 +89,10 @@ class Message {
          numbers = null;
          items = null;
      }
+
+    ArrayList<Customer> viewCustomers(){
+        return customers;
+    }
 
 
 }

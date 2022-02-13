@@ -90,7 +90,7 @@ class Staff{
             System.out.println("place order for: "+itemName);
             var newOrder = new ArrayList<Integer>();
             int dayArrived = scheduler.getDay() + random.nextInt(1,4);
-            int purchasePrice = random.nextInt(1,51);
+            int purchasePrice = random.nextInt(1,30);
             int condition = random.nextInt(1,5);
             int count = 3;
 
@@ -138,6 +138,65 @@ class Staff{
             // You may choose whatever approach to solve the problem.
             //However, please consider using the message-passing style I have used in my code.
             //A test
+            Message message = new Message("viewCustomerLine");
+            ArrayList<Customer> customers = message.viewCustomers();
+            int sellodds;
+            int condmod;
+            double price;
+            boolean pricechange=false;
+            boolean sold=false;
+            Item item;
+            int count=1;
+            for(Customer customer:customers){
+                  sellodds=random.nextInt(1, 2);
+                  if(customer.type=="buying"){
+                  }
+                  else if(customer.type=="selling"){
+                        item=customer.item;
+                        switch(item.condition){
+                              case 1: condmod=random.nextInt(1, 2); break;
+                              case 2: condmod=random.nextInt(2, 4); break;
+                              case 3: condmod=random.nextInt(4, 7); break;
+                              case 4: condmod=random.nextInt(5, 10); break;
+                              case 5: condmod=random.nextInt(7, 15); break;
+                              default: condmod=0;
+                        }
+                        price=random.nextInt(1,20)+condmod;
+                        if(sellodds==1){
+                              sold=true;
+                              pricechange=false;
+                        }
+                        else if(sellodds==2){
+                              sellodds=random.nextInt(1,4);
+                              if(sellodds==4){
+                                    sold=false;
+                              }
+                              else{
+                                    sold=true;
+                                    pricechange=true;
+                                    price=price*(0.9);
+                              }
+                        }
+                        if(sold){
+                           item.purchasePrice=price;
+                           item.listPrice=2*price;
+                           if(pricechange){
+                                 System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+"at a 10% increase for $"+price);
+                           }
+                           else if (!pricechange){
+                                 System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+" for $"+price);
+                           }
+                           goods.
+                        }
+                        else if(!sold){
+                              System.out.println(name+"bought a "+item.type+" in "+item.condition+" from Customer"+count+" for $"+price);
+                        }
+                        customers.remove(count);
+                        count++;
+
+                  }
+            }
+
             System.out.println("Store is open for customers");
             System.out.println("====================================================================================");
             CleanTheStore();
