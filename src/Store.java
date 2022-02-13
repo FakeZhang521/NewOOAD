@@ -249,6 +249,10 @@ class Store{
         return customers;
     }
 
+    private void addBoughtItem(Message message){
+
+    }
+
      public void receiveMessage(Message message) {
           switch (message.getEvent()) {
                case "checkMail" -> cleanMailBox();
@@ -266,6 +270,7 @@ class Store{
                case  "removeBrokenItem"->removeALLBrokentItem();
                case  "printCash"->System.out.println("Cash Register has: "+ register);
                case  "viewCustomerLine"->viewCustomers();
+               case  "addBoughtItem"->addBoughtItem(message);
           }
      }
 
