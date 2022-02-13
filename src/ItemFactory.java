@@ -1,6 +1,7 @@
 import java.util.Objects;
 import java.util.Random;
 
+//Another example of abstraction
 interface ItemFactory {
        Random random = new Random();
         static  Item createItem(String itemName){
@@ -28,6 +29,7 @@ interface ItemFactory {
             if(result == null)throw new IllegalStateException("creation cannot be null");
             return result;
         }
+       //Another example of abstraction
         static Item randomItem(String itemType){
             Item item = createItem(itemType);
             item.type = itemType;

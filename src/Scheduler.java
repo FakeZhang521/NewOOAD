@@ -62,6 +62,7 @@ class scheduler{
              waitingQue.removeIf(entry->entry.get(1) == day);
           }
        //Send a message object to every object
+      //It represents a kind of abstraction that opens an interface to all "message passing".
       static void sendMessage(Message message){
            store.forEach(store->store.receiveMessage(message));
            staff.forEach(staff->staff.receiveMessage(message));
